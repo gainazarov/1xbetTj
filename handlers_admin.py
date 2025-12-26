@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
 from config import is_admin
-from constants import ADMIN_CMD_STATS_TEXT, ADMIN_CMD_SCHEDULED_TEXT
+from constants import ADMIN_CMD_STATS_TEXT, ADMIN_CMD_SCHEDULED_TEXT, ADMIN_CMD_PANEL_TEXT
 from datetime import datetime
 
 from db import get_user_stats, get_recent_mailings, get_scheduled_mailings, update_scheduled_mailing_status
@@ -25,6 +25,16 @@ async def cb_open_admin(callback: CallbackQuery, state: FSMContext) -> None:
     await state.set_state(AdminStates.waiting_for_action)
     await callback.message.answer("Админ-панель. Выберите действие:", reply_markup=build_admin_menu_markup())
     await callback.answer()
+
+
+@router.message(F.text == ADMIN_CMD_PANEL_TEXT)
+async def admin_menu_open_admin(message: types.Message, state: FSMContext) -> None:
+    user_id = message.from_user.id
+    if not is_admin(user_id):
+        return
+
+    await state.set_state(AdminStates.waiting_for_action)
+    await message.answer("Админ-панель. Выберите действие:", reply_markup=build_admin_menu_markup())
 
 
 @router.callback_query(F.data == "admin_close")

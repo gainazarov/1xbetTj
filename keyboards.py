@@ -11,6 +11,7 @@ from constants import (
     ADMIN_CMD_FROM_POSTS_TEXT,
     ADMIN_CMD_STATS_TEXT,
     ADMIN_CMD_SCHEDULED_TEXT,
+    ADMIN_CMD_PANEL_TEXT,
 )
 
 
@@ -99,10 +100,7 @@ def build_admin_reply_keyboard(site_url: str) -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         keyboard=[
             [play_button],
-            [KeyboardButton(text=ADMIN_CMD_BY_LINK_TEXT)],
-            [KeyboardButton(text=ADMIN_CMD_FROM_POSTS_TEXT)],
-            [KeyboardButton(text=ADMIN_CMD_STATS_TEXT)],
-            [KeyboardButton(text=ADMIN_CMD_SCHEDULED_TEXT)],
+            [KeyboardButton(text=ADMIN_CMD_PANEL_TEXT)],
         ],
         resize_keyboard=True,
     )

@@ -69,8 +69,15 @@ async def admin_menu_mailing_by_link(message: types.Message, state: FSMContext) 
         return
 
     await state.set_state(AdminStates.waiting_for_post_link)
+    from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+
+    cancel_markup = InlineKeyboardMarkup(
+        inline_keyboard=[[InlineKeyboardButton(text="Отмена", callback_data="admin_cancel_post_link")]],
+    )
+
     await message.answer(
         "Отправьте ссылку на пост в формате:\nhttps://t.me/channel_name/123",
+        reply_markup=cancel_markup,
     )
 
 
@@ -82,9 +89,24 @@ async def cb_admin_create_mailing_by_link(callback: CallbackQuery, state: FSMCon
         return
 
     await state.set_state(AdminStates.waiting_for_post_link)
+
+    from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+
+    cancel_markup = InlineKeyboardMarkup(
+        inline_keyboard=[[InlineKeyboardButton(text="Отмена", callback_data="admin_cancel_post_link")]],
+    )
+
     await callback.message.answer(
         "Отправьте ссылку на пост в формате:\nhttps://t.me/channel_name/123",
+        reply_markup=cancel_markup,
     )
+    await callback.answer()
+
+
+@router.callback_query(StateFilter(AdminStates.waiting_for_post_link), F.data == "admin_cancel_post_link")
+async def cb_admin_cancel_post_link(callback: CallbackQuery, state: FSMContext) -> None:
+    await state.clear()
+    await callback.message.answer("Создание рассылки по ссылке отменено.")
     await callback.answer()
 
 
@@ -100,7 +122,15 @@ async def admin_receive_post_link(message: types.Message, state: FSMContext) -> 
         await message.answer("Пожалуйста, отправьте текстовую ссылку на публикацию из канала.")
         return
 
-    parsed = parse_post_link(message.text)
+    text = message.text.strip()
+
+    # Возможность отменить действие текстом
+    if text.lower() in {"отмена", "cancel", "/cancel"}:
+        await state.clear()
+        await message.answer("Создание рассылки по ссылке отменено.")
+        return
+
+    parsed = parse_post_link(text)
     if not parsed:
         await message.answer("Не удалось распознать ссылку. Проверьте, что вы отправили ссылку на публикацию в формате https://t.me/имя_канала/номер.")
         return
