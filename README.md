@@ -222,7 +222,7 @@ LOG_FILE=bot.log
 1. **Клонировать репозиторий и перейти в директорию проекта**
 
 ```bash
-git clone <URL_ВАШЕГО_РЕПОЗИТОРИЯ>
+git clone https://github.com/gainazarov/1xbetTj.git
 cd 1xbet
 ```
 
@@ -262,5 +262,3 @@ python main.py
 - Telegram: `https://t.me/gainazarov_a`
 - Email: `ardasher.gainazarov@mail.ru`
 - Сайт / лендинг проекта: `https://gainazarov.com`
-
-> Замените данные выше на свои реальные контакты перед публикацией репозитория.
