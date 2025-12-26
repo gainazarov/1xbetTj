@@ -11,6 +11,7 @@ from aiogram.types import CallbackQuery
 from config import is_admin
 from constants import ADMIN_CMD_BY_LINK_TEXT, ADMIN_CMD_FROM_POSTS_TEXT
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from db import (
     create_mailing,
@@ -474,14 +475,17 @@ async def admin_set_schedule_time(message: types.Message, state: FSMContext) -> 
 
     text = message.text.strip()
     try:
-        dt = datetime.strptime(text, "%d.%m.%Y %H:%M")
+        naive_dt = datetime.strptime(text, "%d.%m.%Y %H:%M")
     except ValueError:
         await message.answer(
             "Не получилось разобрать дату. Проверьте формат. Пример: 26.12.2025 14:30",
         )
         return
 
-    now = datetime.now()
+    # Используем часовой пояс Душанбе (Asia/Dushanbe)
+    tz = ZoneInfo("Asia/Dushanbe")
+    dt = naive_dt.replace(tzinfo=tz)
+    now = datetime.now(tz)
     if dt <= now:
         await message.answer("Время отправки уже прошло. Укажите будущую дату и время.")
         return
@@ -532,8 +536,9 @@ async def admin_set_schedule_time(message: types.Message, state: FSMContext) -> 
 async def scheduled_mailings_worker(bot) -> None:
     """Фоновая задача, отслеживающая запланированные рассылки."""
 
+    tz = ZoneInfo("Asia/Dushanbe")
     while True:
-        now_iso = datetime.now().isoformat()
+        now_iso = datetime.now(tz).isoformat()
         rows = list(get_due_scheduled_mailings(now_iso))
 
         if rows:

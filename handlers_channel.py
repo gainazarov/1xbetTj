@@ -8,7 +8,12 @@ router = Router()
 
 @router.channel_post()
 async def on_channel_post(message: types.Message) -> None:
-    chat_id = str(message.chat.id)
+    # Для публичных каналов стараемся сохранять username, чтобы формировать корректные t.me/имя_канала/ID
+    if message.chat.username:
+        chat_id = message.chat.username
+    else:
+        chat_id = str(message.chat.id)
+
     text = message.text or message.caption or ""
     preview = text.strip().replace("\n", " ")[:200] if text else None
 
