@@ -1,0 +1,39 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+venv/
+.env/
+.venv/
+
+# Environment and secrets
+.env
+*.env
+
+# Logs
+*.log
+logs/
+
+# Databases
+*.db
+*.sqlite3
+
+# VS Code
+.vscode/
+
+# PyCharm / IDEA
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Misc
+*.pid
+
+# Project docs (ТЗ и описания)
+📄 ТЕХНИЧЕСКОЕ ЗАДАНИЕ.md
+🧠 Общая концепция бота.md
+json - описание.md

@@ -1,0 +1,4 @@
+ADMIN_CMD_BY_LINK_TEXT = "📨 Рассылка по ссылке"
+ADMIN_CMD_FROM_POSTS_TEXT = "📨 Рассылка из постов"
+ADMIN_CMD_STATS_TEXT = "📊 Статистика"
+ADMIN_CMD_SCHEDULED_TEXT = "🕒 Запланированные рассылки"
