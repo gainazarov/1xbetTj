@@ -10,6 +10,7 @@ from keyboards import (
     build_admin_menu_markup,
     build_admin_reply_keyboard,
     build_user_reply_keyboard,
+    build_open_site_inline_markup,
 )
 from states import AdminStates
 
@@ -27,15 +28,21 @@ async def cmd_start(message: types.Message, state: FSMContext) -> None:
 
     text = [
         "Добро пожаловать!",
-        "Нажмите кнопку ниже, чтобы открыть сервис в удобном формате внутри Telegram.",
+        "Нажмите кнопку \"Играть\" внизу, чтобы получить ссылку на сервис.",
     ]
 
     if admin_flag:
         text.append("Вы отмечены как администратор и можете управлять рассылками и статистикой прямо из бота.")
 
+    reply_kb = build_admin_reply_keyboard() if admin_flag else build_user_reply_keyboard()
+    await message.answer("\n".join(text), reply_markup=reply_kb)
+
+
+@router.message(F.text == "Играть")
+async def msg_play(message: types.Message) -> None:
     await message.answer(
-        "\n".join(text),
-        reply_markup=build_main_menu_markup(is_admin_user=admin_flag),
+        "Откройте сервис по кнопке ниже:",
+        reply_markup=build_open_site_inline_markup(SITE_URL),
     )
 
 
@@ -56,14 +63,10 @@ async def cb_open_webview(callback: CallbackQuery) -> None:
     admin_flag = is_admin(user_id)
     upsert_user(user_id, is_admin=admin_flag)
     add_webview_event(user_id)
-    keyboard = (
-        build_admin_reply_keyboard(SITE_URL)
-        if admin_flag
-        else build_user_reply_keyboard(SITE_URL)
-    )
+    keyboard = build_admin_reply_keyboard() if admin_flag else build_user_reply_keyboard()
 
     await callback.message.answer(
-        "Нажмите кнопку \"Играть\", чтобы открыть сервис внутри Telegram.",
+        "Нажмите кнопку \"Играть\" внизу, чтобы получить ссылку на сервис.",
         reply_markup=keyboard,
     )
     await callback.answer()

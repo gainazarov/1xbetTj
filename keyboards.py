@@ -3,7 +3,6 @@ from aiogram.types import (
     InlineKeyboardMarkup,
     KeyboardButton,
     ReplyKeyboardMarkup,
-    WebAppInfo,
 )
 
 from constants import (
@@ -15,9 +14,9 @@ from constants import (
 )
 
 
-def build_main_menu_markup(is_admin_user: bool) -> InlineKeyboardMarkup:
+def build_main_menu_markup(is_admin_user: bool, site_url: str) -> InlineKeyboardMarkup:
     buttons = [
-        [InlineKeyboardButton(text="Открыть сервис", callback_data="open_webview")],
+        [InlineKeyboardButton(text="Играть", url=site_url)],
     ]
     if is_admin_user:
         buttons.append([InlineKeyboardButton(text="Админ-панель", callback_data="open_admin")])
@@ -89,18 +88,23 @@ def build_channel_posts_list_markup(rows) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
-def build_user_reply_keyboard(site_url: str) -> ReplyKeyboardMarkup:
-    play_button = KeyboardButton(text="Играть", web_app=WebAppInfo(url=site_url))
+def build_user_reply_keyboard() -> ReplyKeyboardMarkup:
+    play_button = KeyboardButton(text="Играть")
     return ReplyKeyboardMarkup(keyboard=[[play_button]], resize_keyboard=True)
 
 
-def build_admin_reply_keyboard(site_url: str) -> ReplyKeyboardMarkup:
-    play_button = KeyboardButton(text="Играть", web_app=WebAppInfo(url=site_url))
-
+def build_admin_reply_keyboard() -> ReplyKeyboardMarkup:
+    play_button = KeyboardButton(text="Играть")
     return ReplyKeyboardMarkup(
         keyboard=[
             [play_button],
             [KeyboardButton(text=ADMIN_CMD_PANEL_TEXT)],
         ],
         resize_keyboard=True,
+    )
+
+
+def build_open_site_inline_markup(site_url: str) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[[InlineKeyboardButton(text="Играть", url=site_url)]]
     )
