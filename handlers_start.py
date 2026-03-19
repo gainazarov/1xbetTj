@@ -28,14 +28,16 @@ async def cmd_start(message: types.Message, state: FSMContext) -> None:
 
     text = [
         "Добро пожаловать!",
-        "Нажмите кнопку \"Играть\" внизу, чтобы получить ссылку на сервис.",
+        "Нажмите кнопку ниже, чтобы открыть сервис.",
     ]
 
     if admin_flag:
         text.append("Вы отмечены как администратор и можете управлять рассылками и статистикой прямо из бота.")
 
-    reply_kb = build_admin_reply_keyboard() if admin_flag else build_user_reply_keyboard()
-    await message.answer("\n".join(text), reply_markup=reply_kb)
+    await message.answer(
+        "\n".join(text),
+        reply_markup=build_main_menu_markup(is_admin_user=admin_flag, site_url=SITE_URL),
+    )
 
 
 @router.message(F.text == "Играть")
